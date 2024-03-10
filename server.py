@@ -31,7 +31,8 @@ def home():
 
 def process_chat():
 
-    co = cohere.Client("WGVT0O8pNsZqNvm4RIhJ78uJ0hdkSsAN3il9ufPd")
+# note: need to add the cohere API key to the .env file (security risk to hardcode it here)
+    co = cohere.Client(os.environ.get('CO_API_KEY'))
 
     chat_history = load_chat_history()
 
