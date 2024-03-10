@@ -1,2 +1,3 @@
 chat_history.json
 .env
+venv/
