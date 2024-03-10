@@ -3,3 +3,4 @@ chat_history.json
 venv/
 prediction_data/Prediction.txt
 test.py
+__pycache__/trainer.cpython-310.pyc

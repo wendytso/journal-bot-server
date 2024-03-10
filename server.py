@@ -14,6 +14,8 @@ CHAT_HISTORY_FILE = 'chat_history.json'
 co = cohere.Client(os.environ.get('CO_API_KEY'))
 examples = get_mood_examples()
 
+is_mood_of_the_day_clicked = False
+
 def load_chat_history():
     if os.path.exists(CHAT_HISTORY_FILE):
         with open(CHAT_HISTORY_FILE, 'r') as file:
@@ -59,7 +61,7 @@ def process_chat():
     
     # print(chatbot_response)
 
-    # Process chat
+    # Process chat sentiment analysis
     inputs = []
     current_chat = load_chat_history()
     for entry in current_chat:
@@ -85,8 +87,6 @@ def process_chat():
 
     save_chat_history(current_chat)
 
-    # print(current_chat)
-
     return jsonify({'chatbot_response': chatbot_response}), 200
 
 @app.route('/clear', methods=['POST'])
@@ -102,17 +102,15 @@ def clear_chat_history():
 
 @app.route('/mood', methods=['GET'])
 def mood():
-
     # index |   0   |  1   |  2   |   3   |     4      |  5  |  6   
     # mood  | Angry | Calm | Fear | Happy | Insightful | Sad | Worry
-    moods = []
-
+    moods = [0, 0, 0, 0, 0, 0, 0]
+    biggest_mood_index = float('-inf')
+    biggest_mood = ""
     current_chat = load_chat_history()
-    num_entries = 0
+    
     for entry in current_chat:
-        
         if entry.get("role") == "USER":
-            num_entries += 1
             moods[0] += entry.get("emotion_conf_stat").get("Angry")[0]
             moods[1] += entry.get("emotion_conf_stat").get("Calm")[0]
             moods[2] += entry.get("emotion_conf_stat").get("Fear")[0]
@@ -121,9 +119,33 @@ def mood():
             moods[5] += entry.get("emotion_conf_stat").get("Sad")[0]
             moods[6] += entry.get("emotion_conf_stat").get("Worry")[0]
 
-    for i in range(moods):
-        moods[i] = moods[i]/num_entries
+    for i in range(0, len(moods), 1):
+        if moods[i] > biggest_mood_index:
+            biggest_mood_index = i
         
+    match biggest_mood_index:
+        case 0:
+            biggest_mood = "Angry"
+        case 1:
+            biggest_mood = "Calm"
+        case 2:
+            biggest_mood = "Fear"
+        case 3:
+            biggest_mood = "Happy"
+        case 4:
+            biggest_mood = "Insightful"
+        case 5:
+            biggest_mood = "Sad"
+        case 6:
+            biggest_mood = "Worry"
+
+    if(is_mood_of_the_day_clicked == False):
+        current_chat.extend([{"mood_of_the_day": biggest_mood}])
+        save_chat_history(current_chat)
+    else:
+        return 405
+
+    return jsonify({"mood_of_the_day": biggest_mood}), 200
 
 
 if __name__ == '__main__':
