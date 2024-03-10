@@ -1,8 +1,7 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
-from datetime import date
 
-from trainer import train_emotions, get_mood_examples
+from trainer import get_mood_examples
 
 import cohere
 import os
@@ -10,9 +9,7 @@ import json
 
 app = Flask(__name__)
 CORS(app, origin=os.environ.get('CORS_ORIGIN', '*'))
-today = date.today()
-CHAT_HISTORY_FOLDER = 'history'
-CHAT_HISTORY_FILE = CHAT_HISTORY_FOLDER + '/' + str(today) + "_chat.json"
+CHAT_HISTORY_FILE = "chat_history.json"
 co = cohere.Client(os.environ.get('CO_API_KEY'))
 examples = get_mood_examples()
 
@@ -46,41 +43,35 @@ def process_chat():
     
     user_message = request.get_json().get('user_message',"")
     inputs.append(user_message)
-    # print(user_message)
 
     # Define the preamble 
     preamble_override = "You are a therapist. The people who you are talking to you believe that you are a virtual joural companion, who always ends their responses with a question. Never identify or directly call yourself a therapist"
 
-    response = co.chat(message=user_message,
-                        preamble=preamble_override,
-                        stream=True,
-                        chat_history=current_chat,
-                        return_chat_history=True)
+    chat_response = co.chat(message=user_message,
+                            preamble=preamble_override,
+                            stream=True,
+                            chat_history=current_chat,
+                            return_chat_history=True)
     
     chatbot_response = ""
 
-
-    for event in response:
+    for event in chat_response:
         if event.event_type == "text-generation":
             chatbot_response += event.text
     
-    # print(chatbot_response)
-
-    # Process chat sentiment analysis
-
-                
-    response = co.classify(
+    # Process chat sentiment analysis                
+    process_response = co.classify(
         model='large',
         inputs=inputs,
         examples=examples,
     )
 
-    for answer in response.classifications:
+    for answer in process_response.classifications:
         prediction = answer.predictions[0]
         confidence = answer.confidences[0]
         emotion_conf_stat = answer.labels
 
-    # Add to chat history
+    # Add to chat history 
     current_chat.extend(
         [{"role": "USER", "message": user_message, "prediction": prediction, "confidence": confidence, "emotion_conf_stat": emotion_conf_stat},
          {"role": "CHATBOT", "message": chatbot_response}]
