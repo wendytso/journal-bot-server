@@ -1,10 +1,12 @@
 from flask import Flask, request, jsonify
+from flask_cors import CORS
 import cohere
 import os
 import json
 import uuid # need? 
 
 app = Flask(__name__)
+CORS(app, origin=os.environ.get('CORS_ORIGIN', '*'))
 
 CHAT_HISTORY_FILE = 'chat_history.json'
 
@@ -18,6 +20,11 @@ def load_chat_history():
 def save_chat_history(chat_history):
     with open(CHAT_HISTORY_FILE, 'w') as file:
         json.dump(chat_history, file, indent=4)
+
+@app.route('/', methods=['GET']) 
+def home():
+    return jsonify({'message': 'Welcome to the chatbot server'}), 200
+
 
 
 @app.route('/chat', methods=['POST'])
@@ -61,7 +68,7 @@ def process_chat():
 
     print(chat_history)
 
-    return jsonify({'Chatbot Response': chatbot_response}), 200
+    return jsonify({'chatbot_response': chatbot_response}), 200
 
 @app.route('/clear', methods=['POST'])
 
@@ -76,5 +83,5 @@ def clear_chat_history():
         return jsonify({'error': f'Error clearing chat history: {str(e)}'}), 500
 
 if __name__ == '__main__':
-    # run app in debug mode on port 5000
+    # run app in debug mode on port 8080
     app.run(debug=True, port=8080)
