@@ -8,6 +8,7 @@ charset-normalizer==3.3.2
 click==8.1.7
 cohere==4.53
 colorama==0.4.6
+datetime==5.4
 fastavro==1.9.4
 Flask==3.0.2
 Flask-Cors==4.0.0

@@ -1,0 +1,38 @@
+[
+    {
+        "role": "USER",
+        "message": "I'm calling it, we're going to win the hackathon and get all the prizes.",
+        "prediction": "Insightful",
+        "confidence": 0.50609076,
+        "emotion_conf_stat": {
+            "Angry": [
+                0.02015572
+            ],
+            "Calm": [
+                3.210118e-05
+            ],
+            "Fear": [
+                0.14671673
+            ],
+            "Happy": [
+                0.2764762
+            ],
+            "Insightful": [
+                0.50609076
+            ],
+            "Sad": [
+                0.0034630445
+            ],
+            "Worry": [
+                0.047065422
+            ]
+        }
+    },
+    {
+        "role": "CHATBOT",
+        "message": "It's exciting to feel so confident about your team's work! Hackathons can be a great opportunity to innovate and showcase your skills. \n\nWhat will you do with the prizes once you've won them?"
+    },
+    {
+        "mood_of_the_day": "Calm"
+    }
+]

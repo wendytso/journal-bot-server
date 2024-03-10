@@ -1,5 +1,6 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
+from datetime import date
 
 from trainer import train_emotions, get_mood_examples
 
@@ -9,8 +10,9 @@ import json
 
 app = Flask(__name__)
 CORS(app, origin=os.environ.get('CORS_ORIGIN', '*'))
-
-CHAT_HISTORY_FILE = 'chat_history.json'
+today = date.today()
+CHAT_HISTORY_FOLDER = 'history'
+CHAT_HISTORY_FILE = CHAT_HISTORY_FOLDER + '/' + str(today) + "_chat.json"
 co = cohere.Client(os.environ.get('CO_API_KEY'))
 examples = get_mood_examples()
 
@@ -39,8 +41,11 @@ def process_chat():
 
 # note: need to add the cohere API key to the .env file (security risk to hardcode it here)
     current_chat = load_chat_history()
+
+    inputs = []
     
     user_message = request.get_json().get('user_message',"")
+    inputs.append(user_message)
     # print(user_message)
 
     # Define the preamble 
@@ -62,11 +67,7 @@ def process_chat():
     # print(chatbot_response)
 
     # Process chat sentiment analysis
-    inputs = []
-    current_chat = load_chat_history()
-    for entry in current_chat:
-        if entry.get("role") == "USER":
-            inputs.append(entry.get("message"))
+
                 
     response = co.classify(
         model='large',
