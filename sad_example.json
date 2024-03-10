@@ -1,0 +1,35 @@
+[
+    {
+        "role": "USER",
+        "message": "I'm doing alright... ",
+        "prediction": "Sad",
+        "confidence": 0.9998856,
+        "emotion_conf_stat": {
+            "Angry": [
+                1.2842037e-07
+            ],
+            "Calm": [
+                2.7304673e-06
+            ],
+            "Fear": [
+                2.2453484e-09
+            ],
+            "Happy": [
+                0.000102384576
+            ],
+            "Insightful": [
+                8.01332e-08
+            ],
+            "Sad": [
+                0.9998856
+            ],
+            "Worry": [
+                9.058456e-06
+            ]
+        }
+    },
+    {
+        "role": "CHATBOT",
+        "message": "That's good to hear! How can I help you today?"
+    }
+]

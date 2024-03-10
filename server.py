@@ -7,6 +7,9 @@ import cohere
 import os
 import json
 
+from dotenv import load_dotenv
+load_dotenv() 
+
 app = Flask(__name__)
 CORS(app, origin=os.environ.get('CORS_ORIGIN', '*'))
 CHAT_HISTORY_FILE = "chat_history.json"
@@ -97,7 +100,7 @@ def mood():
     # index |   0   |  1   |  2   |   3   |     4      |  5  |  6   
     # mood  | Angry | Calm | Fear | Happy | Insightful | Sad | Worry
     moods = [0, 0, 0, 0, 0, 0, 0]
-    biggest_mood_index = float('-inf')
+    biggest_mood_index = 0
     biggest_mood = ""
     current_chat = load_chat_history()
     
@@ -111,10 +114,13 @@ def mood():
             moods[5] += entry.get("emotion_conf_stat").get("Sad")[0]
             moods[6] += entry.get("emotion_conf_stat").get("Worry")[0]
 
-    for i in range(0, len(moods), 1):
-        if moods[i] > biggest_mood_index:
+    print(moods)
+    
+    for i in range(0, len(moods)):
+        if moods[i] > moods[biggest_mood_index]:
             biggest_mood_index = i
-        
+    
+
     match biggest_mood_index:
         case 0:
             biggest_mood = "Angry"
@@ -133,7 +139,7 @@ def mood():
 
     if(is_mood_of_the_day_clicked == False):
         current_chat.extend([{"mood_of_the_day": biggest_mood}])
-        save_chat_history(current_chat)
+        # save_chat_history(current_chat)
     else:
         return 405
 
