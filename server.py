@@ -3,9 +3,12 @@ from flask_cors import CORS
 import cohere
 import os
 import json
+from dotenv import load_dotenv
+load_dotenv() 
 
 app = Flask(__name__)
-CORS(app, origin=os.environ.get('CORS_ORIGIN', '*'))
+CORS(app, origin=os.environ.get('CORS_ORIGIN'))
+print("CORS_ORIGIN", os.environ.get('CORS_ORIGIN'))
 
 CHAT_HISTORY_FILE = 'chat_history.json'
 
@@ -69,16 +72,14 @@ def process_chat():
     return jsonify({'chatbot_response': chatbot_response}), 200
 
 @app.route('/clear', methods=['POST'])
-
 def clear_chat_history():
     try: 
         os.remove(CHAT_HISTORY_FILE)
-
         load_chat_history()
-
         return jsonify({'message': 'Chat history cleared successfully'}), 200
     except Exception as e:
         return jsonify({'error': f'Error clearing chat history: {str(e)}'}), 500
+    
 
 if __name__ == '__main__':
     # run app in debug mode on port 8080
