@@ -87,9 +87,9 @@ def process_chat():
 @app.route('/clear', methods=['POST'])
 def clear_chat_history():
     try: 
-        os.remove(CHAT_HISTORY_FILE)
-
-        load_chat_history()
+     if os.path.exists(CHAT_HISTORY_FILE):
+        with open(CHAT_HISTORY_FILE, 'w') as file:
+            file.write('[]')
 
         return jsonify({'message': 'Chat history cleared successfully'}), 200
     except Exception as e:
