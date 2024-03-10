@@ -63,6 +63,18 @@ def process_chat():
 
     return jsonify({'Chatbot Response': chatbot_response}), 200
 
+@app.route('/clear', methods=['POST'])
+
+def clear_chat_history():
+    try: 
+        os.remove(CHAT_HISTORY_FILE)
+
+        load_chat_history()
+
+        return jsonify({'message': 'Chat history cleared successfully'}), 200
+    except Exception as e:
+        return jsonify({'error': f'Error clearing chat history: {str(e)}'}), 500
+
 if __name__ == '__main__':
     # run app in debug mode on port 5000
     app.run(debug=True, port=8080)
