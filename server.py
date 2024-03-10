@@ -3,7 +3,6 @@ from flask_cors import CORS
 import cohere
 import os
 import json
-import uuid # need? 
 
 app = Flask(__name__)
 CORS(app, origin=os.environ.get('CORS_ORIGIN', '*'))
@@ -39,10 +38,8 @@ def process_chat():
     user_message = request.get_json().get('user_message',"")
     print(user_message)
 
-    conversation_id = str(uuid.uuid4()) # need? 
-
     # Define the preamble 
-    preamble_override = "You are a therapist. The people who you are talking to you believe that you are a virtual joural companion, who always ends their responses with a question"
+    preamble_override = "You are a therapist. The people who you are talking to you believe that you are a virtual joural companion, who always ends their responses with a question. Never identify or directly call yourself a therapist"
 
     response = co.chat(message=user_message,
                         preamble=preamble_override,
