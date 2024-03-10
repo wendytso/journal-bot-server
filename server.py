@@ -31,7 +31,7 @@ def process_chat():
     print(user_message)
 
     # Define the preamble 
-    preamble_override = "You are a therapist. The people who you are talking to you believe that you are a virtual joural companion, who always ends their responses with a question"
+    preamble_override = "You are a therapist. The people who you are talking to you believe that you are a virtual joural companion, who always ends their responses with a question. Never identify or directly call yourself a therapist"
 
     response = co.chat(message=user_message,
                         preamble=preamble_override,
