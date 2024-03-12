@@ -17,6 +17,8 @@ We are committed to providing a valuable tool for emotional well-being and welco
 <!-- Installation Requirements -->
 ### Installation Requirements
 
+This is the server side repo. For the client side, visit: https://github.com/anagelberg/journal-bot-client
+
 1. Get a free API Key at [https://cohere.com/](Sign up at https://www.cohere.ai/ to obtain an API key)
 2. Clone the repo
    ```sh
